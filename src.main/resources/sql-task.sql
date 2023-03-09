@@ -31,7 +31,8 @@ WHERE city IN (SELECT city
                HAVING count(airport_code) > 1);
 
 -- Найти ближайший вылетающий рейс из Екатеринбурга в Москву, на который еще не завершилась регистрация
-SELECT *
+SELECT flight_id, flight_no, scheduled_departure, scheduled_arrival, departure_airport, arrival_airport, status,
+       aircraft_code, actual_departure, actual_arrival
 FROM flights
 WHERE status NOT IN ('Departed', 'Arrived', 'Canceled')
   AND scheduled_departure > bookings.now()
@@ -41,13 +42,13 @@ ORDER BY scheduled_departure
 LIMIT 1;
 
 -- Вывести самый дешевый и дорогой билет и стоимость ( в одном результирующем ответе)
-(SELECT *
+(SELECT ticket_no, flight_id, fare_conditions, amount
  FROM ticket_flights
  WHERE amount IN (SELECT max(amount)
                   FROM ticket_flights)
  LIMIT 1)
 UNION
-(SELECT *
+(SELECT ticket_no, flight_id, fare_conditions, amount
  FROM ticket_flights
  WHERE amount IN (SELECT min(amount)
                   FROM ticket_flights)
